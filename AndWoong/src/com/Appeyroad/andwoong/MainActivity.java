@@ -3,15 +3,15 @@ package com.Appeyroad.andwoong;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.cocos2d.events.TouchDispatcher;
-import org.cocos2d.layers.Layer;
-import org.cocos2d.nodes.Director;
-import org.cocos2d.nodes.Label;
-import org.cocos2d.nodes.Scene;
-import org.cocos2d.nodes.Sprite;
+import org.cocos2d.events.CCTouchDispatcher;
+import org.cocos2d.layers.CCLayer;
+import org.cocos2d.nodes.CCDirector;
+import org.cocos2d.nodes.CCLabel;
+import org.cocos2d.layers.CCScene;
+import org.cocos2d.nodes.CCSprite;
 import org.cocos2d.opengl.CCGLSurfaceView;
-import org.cocos2d.types.CCPoint;
-import org.cocos2d.types.CCRect;
+import org.cocos2d.types.CGPoint;
+import org.cocos2d.types.CGRect;
 
 import android.app.Activity;
 import android.graphics.BitmapFactory;
@@ -40,23 +40,23 @@ public class MainActivity extends Activity {
 		setContentView(mGLSurfaceView);
 
 		// attach the OpenGL view to a window
-		Director.sharedDirector().attachInView(mGLSurfaceView);
+		CCDirector.sharedDirector().attachInView(mGLSurfaceView);
 
 		// no effect here because device orientation is controlled by manifest
-		Director.sharedDirector().setDeviceOrientation(
-				Director.CCDeviceOrientationPortrait);
+		CCDirector.sharedDirector().setDeviceOrientation(
+				CCDirector.kCCDeviceOrientationPortrait);
 
 		// show FPS
 		// set false to disable FPS display, but don't delete fps_images.png!!
-		Director.sharedDirector().setDisplayFPS(true);
+		CCDirector.sharedDirector().setDisplayFPS(true);
 
 		// frames per second
-		Director.sharedDirector().setAnimationInterval(1.0f / 60);
+		CCDirector.sharedDirector().setAnimationInterval(1.0f / 60);
 
-		Scene scene = TemplateLayer.scene();
+		CCScene scene = TemplateLayer.scene();
 
 		// Make the Scene active
-		Director.sharedDirector().runWithScene(scene);
+		CCDirector.sharedDirector().runWithScene(scene);
 	}
 
 	@Override
@@ -68,30 +68,30 @@ public class MainActivity extends Activity {
 	public void onPause() {
 		super.onPause();
 
-		Director.sharedDirector().pause();
+		CCDirector.sharedDirector().pause();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 
-		Director.sharedDirector().resume();
+		CCDirector.sharedDirector().resume();
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 
-		Director.sharedDirector().end();
+		CCDirector.sharedDirector().end();
 	}
 
 
-	static class TemplateLayer extends Layer {
-		Label lbl;
+	static class TemplateLayer extends CCLayer {
+		CCLabel lbl;
 
-		public static Scene scene() {
-			Scene scene = Scene.node();
-			Layer layer = new TemplateLayer();
+		public static CCScene scene() {
+			CCScene scene = CCScene.node();
+			CCLayer layer = new TemplateLayer();
 
 			scene.addChild(layer);
 
@@ -102,16 +102,15 @@ public class MainActivity extends Activity {
 
 			this.setIsTouchEnabled(true);
 
-			lbl = Label.label("Hello World!", "DroidSans", 24);
+			lbl = CCLabel.makeLabel("Hello World!", "DroidSans", 24);
 
 			addChild(lbl, 0);
-			lbl.setPosition(160, 240);
+			lbl.setPosition(CGPoint.make(160, 240));
 		}
 
 		@Override
 		public boolean ccTouchesBegan(MotionEvent event) {
-			CCPoint convertedLocation = Director.sharedDirector()
-					.convertToGL(CCPoint.make(event.getX(), event.getY()).x,CCPoint.make(event.getX(), event.getY()).y);
+			CGPoint convertedLocation = CCDirector.sharedDirector().convertToGL(CGPoint.make(event.getX(), event.getY()));
 
 			String title = String.format("touch at point(%.2f, %.2f)",
 					convertedLocation.x, convertedLocation.y);
@@ -120,7 +119,7 @@ public class MainActivity extends Activity {
 				lbl.setString(title);
 			}
 
-			return TouchDispatcher.kEventHandled;
+			return CCTouchDispatcher.kEventHandled;
 		}
 
 	}

@@ -17,12 +17,15 @@ import org.cocos2d.types.CGRect;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
@@ -32,6 +35,7 @@ public class MainActivity extends Activity {
 	SQLiteDatabase db;
 	enum SceneIndex {loading, menu, intro, cave, outro, gameover, tutorial, option, sound, developer}
 	static SceneIndex currentScene;
+	static Handler h;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -119,7 +123,6 @@ public class MainActivity extends Activity {
 		db.close();
 	}
 
-
 	static class TemplateLayer extends CCLayer {
 		CCLabel lbl;
 		CCSprite background, bear;
@@ -138,17 +141,16 @@ public class MainActivity extends Activity {
 				Log.e("LoadingScene", "start");
 				background=CCSprite.sprite("default.png");
 				addChild(background, 0);
-				background.setPosition(CGPoint.make(240, 400));
-				currentScene=SceneIndex.menu;
-				CCDirector.sharedDirector().replaceScene(TemplateLayer.scene());
+				background.setPosition(CGPoint.ccp(240, 400));
+				h= new Handler();
+		        h.postDelayed(runLoading, 2000);				
 			}
 			else if(currentScene==SceneIndex.menu){
 				Log.e("MenuScene", "start");
 				background=CCSprite.sprite("bgp2.png");
 				addChild(background, 0);
-				background.setPosition(CGPoint.make(240, 400));
-				currentScene=SceneIndex.cave;
-				CCDirector.sharedDirector().pushScene(TemplateLayer.scene());
+				background.setPosition(CGPoint.ccp(240, 400));
+				h.postDelayed(runLoading, 2000);
 			}
 			else if(currentScene==SceneIndex.tutorial){}
 			else if(currentScene==SceneIndex.option){}
@@ -186,6 +188,14 @@ public class MainActivity extends Activity {
 
 			return CCTouchDispatcher.kEventHandled;
 		}
+		
+		Runnable runLoading=new Runnable(){
+			public void run(){
+				if(currentScene==SceneIndex.loading) currentScene=SceneIndex.menu;
+				else if(currentScene==SceneIndex.menu) currentScene=SceneIndex.cave;
+				CCDirector.sharedDirector().replaceScene(TemplateLayer.scene());
+			}
+		};
 
 	}
 

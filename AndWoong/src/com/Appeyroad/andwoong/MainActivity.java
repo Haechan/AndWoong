@@ -54,6 +54,7 @@ public class MainActivity extends Activity {
 		db=dbHelper.getWritableDatabase();//is final ok?
         setting=db.query("woong", null, null, null, null, null, null);
         setting.moveToPosition(0);
+        /*
         if(setting.getInt(setting.getColumnIndex("startTime"))==0){
         	setting.close();
         	ContentValues newValues=new ContentValues();
@@ -63,6 +64,7 @@ public class MainActivity extends Activity {
             setting=db.query("woong", null, null, null, null, null, null);
             setting.moveToPosition(0);
         }
+        */
         /*
         Cursor setting1=db.query("woong", null, null, null, null, null, null);
         setting1.moveToPosition(0);
@@ -179,10 +181,12 @@ public class MainActivity extends Activity {
 				background.setScaleX(1.6666666f);
 				background.setScaleY(1.25f);
 				
-				CCMenuItem newGameBtn = CCMenuItemImage.item("new_game.png", "new_game_sel.png");
+				CCMenuItem newGameBtn = CCMenuItemImage.item("new_game.png", "new_game_sel.png", this, "onNewGame");
 				CCMenuItem loadGameBtn = CCMenuItemImage.item("loadGame.png", "new_game_sel.png");
 				CCMenuItem tutorialBtn = CCMenuItemImage.item("tutorial.png", "tutorial_sel.png");
 				CCMenuItem aboutBtn = CCMenuItemImage.item("about.png", "about_sel.png");
+				if(setting.getInt(setting.getColumnIndex("lastTime"))==0) loadGameBtn.setIsEnabled(false);
+				else loadGameBtn.setIsEnabled(true);
 				menu = CCMenu.menu(newGameBtn, loadGameBtn, tutorialBtn, aboutBtn);
 			    menu.alignItemsVertically();
 			    menu.setPosition(400*unitPixel.x, 240*unitPixel.y);
@@ -239,7 +243,7 @@ public class MainActivity extends Activity {
 				bear=CCSprite.sprite("woong.png");
 				addChild(bear, 1);
 				//setting bear's position
-		        if(setting.getInt(setting.getColumnIndex("lastTime"))==0 && setting.getInt(setting.getColumnIndex("lastTime"))==0){
+		        if(setting.getInt(setting.getColumnIndex("lastTime"))==0){
 		        	//bear's position when new game is started
 		        	CGPoint startPoint = CGPoint.make(170*unitPixel.x, 130*unitPixel.y);
 		        	bear.setPosition(startPoint);
@@ -263,7 +267,7 @@ public class MainActivity extends Activity {
 		};
 		
 		//method called when touch began for each case(scene)
-		//usually used when buttons are touched
+		//usually used when buttons are touched(may be)
 		@Override
 		public boolean ccTouchesBegan(MotionEvent event) {
 			CGPoint touchedPoint = CCDirector.sharedDirector().convertToGL(CGPoint.make(event.getX(), event.getY()));
@@ -271,7 +275,7 @@ public class MainActivity extends Activity {
 			//when touched in menu scene
 			if(currentScene==SceneIndex.menu){
 				Log.e("menu","clicked");
-				
+				/*
 				//when new game is clicked
 				if(menu.getSelectedItem().getTag()==0){
 					Log.e("menu","new game");
@@ -290,7 +294,7 @@ public class MainActivity extends Activity {
 				else if(menu.getSelectedItem().getTag()==3){
 					Log.e("menu","new game");
 				}
-				
+				*/
 				/*
 				//when new game is clicked
 				if(CGRect.containsPoint(menu.getChildByTag(0).getBoundingBox(), touchedPoint)){
@@ -391,6 +395,61 @@ public class MainActivity extends Activity {
 			}
 		}
 
+		//method called when new game button is pressed
+		//setting new game
+		public void onNewGame(Object o){
+			Log.e("menu","to new game");
+			
+			setting.close();
+        	ContentValues newValues=new ContentValues();
+        	newValues.put("startTime", System.currentTimeMillis());
+    		db.update("woong", newValues, null, null);
+    		newValues.put("lastTime", 0);
+    		db.update("woong", newValues, null, null);
+    		newValues.put("lastLocation", 0);
+    		db.update("woong", newValues, null, null);
+    		newValues.put("sleepTime", 0);
+    		db.update("woong", newValues, null, null);
+    		newValues.put("wormwoodDay", 0);
+    		db.update("woong", newValues, null, null);
+    		newValues.put("garlicNight", 0);
+    		db.update("woong", newValues, null, null);
+    		setting=db.query("woong", null, null, null, null, null, null);
+            setting.moveToPosition(0);
+            
+			currentScene=SceneIndex.cave;
+			CCDirector.sharedDirector().pushScene(TemplateLayer.scene());
+		}
+		//method called when load game button is pressed
+		//calling load game
+		public void onLoadGame(Object o){
+			Log.e("menu","to load game");
+			currentScene=SceneIndex.cave;
+			CCDirector.sharedDirector().pushScene(TemplateLayer.scene());
+		}
+		//method called when tutorial button is pressed
+		public void onTutorial(Object o){
+			Log.e("menu","to tutorial");
+		}
+		//method called when about button is pressed
+		public void onAbout(Object o){
+			Log.e("menu","to about");
+		}
+	}
+	
+	//method called when back button is pressed
+	@Override
+	public void onBackPressed(){
+		if(currentScene==SceneIndex.cave){
+			Log.e("backBtn","cave to menu");
+			
+			//needs saving data(setting)
+			
+			currentScene=SceneIndex.menu;
+			CCDirector.sharedDirector().popScene();
+		}
+		//other cases(scenes)' method are need to be added
+		else super.onBackPressed();
 	}
 
 }

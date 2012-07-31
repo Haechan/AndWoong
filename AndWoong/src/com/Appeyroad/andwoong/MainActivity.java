@@ -138,7 +138,6 @@ public class MainActivity extends Activity {
 		final CGPoint unitPixel = CGPoint.ccp(CCDirector.sharedDirector().displaySize().width/800, CCDirector.sharedDirector().displaySize().height/480);
 		//units called by any methods
 		CCLabel lbl;
-		CCMenu menu;
 		CCSprite background, bear, wormwood, garlic, sleepItem;
 
 		//method calling scene
@@ -187,7 +186,7 @@ public class MainActivity extends Activity {
 				CCMenuItem aboutBtn = CCMenuItemImage.item("about.png", "about_sel.png");
 				if(setting.getInt(setting.getColumnIndex("lastTime"))==0) loadGameBtn.setIsEnabled(false);
 				else loadGameBtn.setIsEnabled(true);
-				menu = CCMenu.menu(newGameBtn, loadGameBtn, tutorialBtn, aboutBtn);
+				CCMenu menu = CCMenu.menu(newGameBtn, loadGameBtn, tutorialBtn, aboutBtn);
 			    menu.alignItemsVertically();
 			    menu.setPosition(400*unitPixel.x, 240*unitPixel.y);
 			    addChild(menu, 1);

@@ -252,7 +252,7 @@ public class MainActivity extends Activity {
 		        	//bear's position when game is re-loaded
 		        }
 		        //setting bear's action
-				//schedule("CaveLogic", 1);
+				schedule("CaveLogic", 1);
 			}
 		}
 
@@ -388,7 +388,7 @@ public class MainActivity extends Activity {
 		
 		//bear's action
 		//logics in cave
-		public void CaveLogic(){
+		public void CaveLogic(float dt){
 			if(bear!=null){
 				bear.runAction(CCMoveBy.action(0.2f, CGPoint.ccp(15*unitPixel.x, 0*unitPixel.y)));
 				Log.e("bear","move");

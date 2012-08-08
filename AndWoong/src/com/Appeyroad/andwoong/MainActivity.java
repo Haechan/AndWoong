@@ -214,7 +214,10 @@ public class MainActivity extends Activity {
 				Log.e("CaveScene", "start");
 				this.setIsTouchEnabled(true);
 
-				background=CCSprite.sprite("night_with_letter.png");
+				int nowHour=Integer.parseInt(android.text.format.DateFormat.format("hh", System.currentTimeMillis()).toString());
+				Log.e("nowHour", ""+nowHour);
+				if(nowHour>=19 || nowHour<07) background=CCSprite.sprite("night_with_letter.png");
+				else background=CCSprite.sprite("day_with_letter.png");
 				addChild(background, 0);
 				background.setPosition(CGPoint.ccp(400*unitPixel.x, 240*unitPixel.y));
 				background.setScaleX(1.6666666f);
@@ -388,9 +391,27 @@ public class MainActivity extends Activity {
 		//bear's action
 		//logics in cave
 		public void CaveLogic(float dt){
+			if(background!=null){
+				int nowTime=Integer.parseInt(android.text.format.DateFormat.format("hhmmss", System.currentTimeMillis()).toString());
+				if(nowTime==070000){
+					background=CCSprite.sprite("day_with_letter.png");
+					addChild(background, 0);
+					background.setPosition(CGPoint.ccp(400*unitPixel.x, 240*unitPixel.y));
+					background.setScaleX(1.6666666f);
+					background.setScaleY(1.25f);
+				}
+				else if(nowTime==190000){
+					background=CCSprite.sprite("night_with_letter.png");
+					addChild(background, 0);
+					background.setPosition(CGPoint.ccp(400*unitPixel.x, 240*unitPixel.y));
+					background.setScaleX(1.6666666f);
+					background.setScaleY(1.25f);
+				}
+			}
 			if(bear!=null){
 				bear.runAction(CCMoveBy.action(0.2f, CGPoint.ccp(15*unitPixel.x, 0*unitPixel.y)));
 				Log.e("bear","move");
+				
 			}
 		}
 

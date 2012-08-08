@@ -181,9 +181,9 @@ public class MainActivity extends Activity {
 				background.setScaleY(1.25f);
 				
 				CCMenuItem newGameBtn = CCMenuItemImage.item("new_game.png", "new_game_sel.png", this, "onNewGame");
-				CCMenuItem loadGameBtn = CCMenuItemImage.item("loadGame.png", "new_game_sel.png");
-				CCMenuItem tutorialBtn = CCMenuItemImage.item("tutorial.png", "tutorial_sel.png");
-				CCMenuItem aboutBtn = CCMenuItemImage.item("about.png", "about_sel.png");
+				CCMenuItem loadGameBtn = CCMenuItemImage.item("loadGame.png", "new_game_sel.png", this, "onLoadGame");
+				CCMenuItem tutorialBtn = CCMenuItemImage.item("tutorial.png", "tutorial_sel.png", this, "onTutorial");
+				CCMenuItem aboutBtn = CCMenuItemImage.item("about.png", "about_sel.png", this, "onAbout");
 				if(setting.getInt(setting.getColumnIndex("lastTime"))==0) loadGameBtn.setIsEnabled(false);
 				else loadGameBtn.setIsEnabled(true);
 				CCMenu menu = CCMenu.menu(newGameBtn, loadGameBtn, tutorialBtn, aboutBtn);
